@@ -57,4 +57,4 @@ def downloadResource(filename):
     except:
         print 'There was an error downlaoding the file.'
 
-downloadResource("data/data.csv")
+downloadResource("tool/data/data.csv")
