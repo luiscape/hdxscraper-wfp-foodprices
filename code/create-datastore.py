@@ -32,6 +32,7 @@ if __name__ == '__main__':
         print(usage)
         sys.exit(1)
 
+
 # Function to download a resource from CKAN.
 def downloadResource(filename):
 
@@ -42,18 +43,28 @@ def downloadResource(filename):
             local_filename = l
             # NOTE the stream=True parameter
             r = requests.get(url, stream=True, auth=('dataproject', 'humdata'))
-            with open(local_filename, 'wb') as f:
-                for chunk in r.iter_content(chunk_size=1024): 
-                    if chunk: # filter out keep-alive new chunks
-                        f.write(chunk)
-                        f.flush()
-            return local_filename
+
+            if r.status_code != 200:
+                print "Status code isn't right."
+
+            else: 
+                with open(local_filename, 'wb') as f:
+                    for chunk in r.iter_content(chunk_size=1024): 
+                        if chunk: # filter out keep-alive new chunks
+                            f.write(chunk)
+                            f.flush()
+                return local_filename
 
     # querying
-    url = 'https://data.hdx.rwlabs.org/api/action/resource_show?id=' + resource_id
-    r = requests.get(url)
-    doc = r.json()
-    fileUrl = doc["result"]["perma_link"]
+    url = 'https://test-data.hdx.rwlabs.org/api/action/resource_show?id=' + resource_id
+    r = requests.get(url, headers=headers, auth=('dataproject', 'humdata'))
+
+    if r.status_code != 200:
+        print "Couldn't reach server."
+        return
+    else:
+        doc = r.json()
+        fileUrl = doc["result"]["url"]
 
     # downloading
     try:
@@ -61,6 +72,7 @@ def downloadResource(filename):
         
     except:
         print 'There was an error downlaoding the file.'
+
 
 def uploadResource(resource_id, apikey, p):
     hdx = ckanapi.RemoteCKAN('https://data.hdx.rwlabs.org',
@@ -186,7 +198,7 @@ def updateDatastore(filename):
 def runEverything():
     # uploadResource(resource_id, apikey, PATH)
     downloadResource(PATH)
-    updateDatastore(PATH)
+    # updateDatastore(PATH)
 
 
 # Error handler for running the entire script
