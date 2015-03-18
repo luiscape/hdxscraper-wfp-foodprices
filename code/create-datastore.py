@@ -139,7 +139,7 @@ def updateDatastore(filename):
 
             reader = csv.DictReader(open(resource['path']))
             rows = [ row for row in reader ]
-            chunksize = 10000
+            chunksize = 1000
             offset = 0
             print('Uploading data for file: %s' % resource['path'])
             while offset < len(rows):
