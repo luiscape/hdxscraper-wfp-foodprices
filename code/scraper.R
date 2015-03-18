@@ -42,6 +42,8 @@ fetchWFPData <- function(l = NULL) {
 # the dataset.
 cleanAndTransform <- function(df = NULL) {
   if (is.null(df)) stop("Please provide a data.frame")
+
+  cat("Cleaning data...\n")
   
   # A column is coming with Chinese characters.
   # I'll be removing it for now, but it
@@ -55,6 +57,7 @@ cleanAndTransform <- function(df = NULL) {
 
 # Making assessment
 makeAssessment <- function(df = NULL) {
+  cat("Making assessment ... \n")
   a <- list(
       n_countries = length(unique(df$ADM0_NAME)),
       n_markets = length(unique(df$mkt_name)),
@@ -68,6 +71,7 @@ makeAssessment <- function(df = NULL) {
 
 # Function to write output.
 writeOutput <- function(df = NULL, csv = TRUE, db = TRUE, l = NULL) {
+  cat("Writting output ... \n")
   if (!is.data.frame(df)) stop("Data provided isn't a data.frame.")
   if (csv) write.csv(df, paste0(l, ".csv"), row.names = FALSE)
   if (db) writeTables(df, "food_prices", "scraperwiki")

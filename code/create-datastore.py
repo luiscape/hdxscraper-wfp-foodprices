@@ -6,7 +6,6 @@ import csv
 import json
 import scraperwiki
 import ckanapi
-#import urllib
 import requests
 import sys
 import hashlib
@@ -16,9 +15,22 @@ PATH = 'tool/data/temp.csv'
 remote = 'https://test-data.hdx.rwlabs.org'
 resource_id = sys.argv[1]
 apikey = sys.argv[2]
+headers = { 'X-CKAN-API-Key': apikey, 'content-type': 'application/json' }
 
 # ckan will be an instance of ckan api wrapper
-ckan = None
+# ckan = None
+
+# Command line arguments.
+if __name__ == '__main__':
+    if len(sys.argv) <= 2:
+        usage = '''python scripts/upload.py {resource-id} {api-key}
+
+        e.g.
+
+        python scripts/upload.py RESOURCE_ID API_KEY
+        '''
+        print(usage)
+        sys.exit(1)
 
 # Function to download a resource from CKAN.
 def downloadResource(filename):
@@ -165,18 +177,6 @@ def updateDatastore(filename):
                         records=rowset)
                 offset += chunksize
                 print('Done: %s' % offset)
-
-
-        if __name__ == '__main__':
-            if len(sys.argv) <= 2:
-                usage = '''python scripts/upload.py {resource-id} {api-key}
-
-                e.g.
-
-                python scripts/upload.py RESOURCE_ID API_KEY
-                '''
-                print(usage)
-                sys.exit(1)
 
             ckan = ckanapi.RemoteCKAN(remote, apikey=apikey)
 
