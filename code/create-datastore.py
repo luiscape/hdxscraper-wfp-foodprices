@@ -11,7 +11,7 @@ import sys
 import hashlib
 
 # Collecting configuration variables
-PATH = 'data/temp.csv'
+PATH = 'tool/data/temp.csv'
 remote = 'https://test-data.hdx.rwlabs.org'
 resource_id = sys.argv[1]
 apikey = sys.argv[2]
