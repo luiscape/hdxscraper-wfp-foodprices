@@ -40,6 +40,7 @@ def downloadResource(filename):
 def uploadResource(resource_id, apikey, p):
     hdx = ckanapi.RemoteCKAN('https://data.hdx.rwlabs.org',
         apikey=apikey,
+        auth=('dataproject', 'humdata'),
         user_agent='CKAN_API/1.0')
     try:
         hdx.action.resource_update(
@@ -139,7 +140,7 @@ def updateDatastore(filename):
 
             reader = csv.DictReader(open(resource['path']))
             rows = [ row for row in reader ]
-            chunksize = 1000
+            chunksize = 100
             offset = 0
             print('Uploading data for file: %s' % resource['path'])
             while offset < len(rows):
