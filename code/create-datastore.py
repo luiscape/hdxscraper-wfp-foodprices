@@ -116,7 +116,7 @@ def updateDatastore(filename):
                         { "id" : "um_name", "type" : "text" },
                         { "id" : "mp_month", "type" : "text" },
                         { "id" : "mp_year", "type" : "integer" },
-                        { "id" : "mp_price", "type" : "price" }
+                        { "id" : "mp_price", "type" : "float" }
                     ]
                 },
                 'indexes': ["ADM0_ID","ADM0_NAME","ADM1_ID","ADM1_NAME","mkt_id","mkt_name"]
