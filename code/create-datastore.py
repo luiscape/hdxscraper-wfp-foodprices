@@ -11,14 +11,14 @@ import sys
 import hashlib
 
 # Collecting configuration variables
-PATH = 'tool/data/temp.csv'
+PATH = 'data/temp.csv'
 remote = 'https://test-data.hdx.rwlabs.org'
 resource_id = sys.argv[1]
 apikey = sys.argv[2]
 headers = { 'X-CKAN-API-Key': apikey, 'content-type': 'application/json' }
 
 # ckan will be an instance of ckan api wrapper
-# ckan = None
+ckan = ckanapi.RemoteCKAN(remote, apikey=apikey)
 
 # Command line arguments.
 if __name__ == '__main__':
@@ -138,22 +138,22 @@ def updateDatastore(filename):
                 'path': filename,
                 'schema': {
                     "fields": [
-                        { "id" : "ADM0_ID", "type" : "integer" },
+                        { "id" : "ADM0_ID", "type" : "float" },
                         { "id" : "ADM0_NAME", "type" : "text" },
-                        { "id" : "ADM1_ID", "type" : "integer" },
+                        { "id" : "ADM1_ID", "type" : "float" },
                         { "id" : "ADM1_NAME", "type" : "text" },
-                        { "id" : "mkt_id", "type" : "integer" },
+                        { "id" : "mkt_id", "type" : "float" },
                         { "id" : "mkt_name", "type" : "text" },
-                        { "id" : "cm_id", "type" : "integer" },
+                        { "id" : "cm_id", "type" : "float" },
                         { "id" : "cm_name", "type" : "text" },
-                        { "id" : "cur_id", "type" : "integer" },
+                        { "id" : "cur_id", "type" : "float" },
                         { "id" : "cur_name", "type" : "text" },
-                        { "id" : "pt_id", "type" : "integer" },
+                        { "id" : "pt_id", "type" : "float" },
                         { "id" : "pt_name", "type" : "text" },
-                        { "id" : "um_id", "type" : "integer" },
+                        { "id" : "um_id", "type" : "float" },
                         { "id" : "um_name", "type" : "text" },
                         { "id" : "mp_month", "type" : "text" },
-                        { "id" : "mp_year", "type" : "integer" },
+                        { "id" : "mp_year", "type" : "float" },
                         { "id" : "mp_price", "type" : "float" }
                     ]
                 },
@@ -163,23 +163,38 @@ def updateDatastore(filename):
 
 
         def upload_data_to_datastore(ckan_resource_id, resource):
-            # let's delete any existing data before we upload again
+
+            # Deleting old DataStores before re-creating it
+            # once again.
             try:
                 ckan.action.datastore_delete(resource_id=ckan_resource_id, force=True)
-            except:
-                pass
 
+            except Exception as e:
+                print "There was an error deleting the datastore"
+                print e
+                pass  # in case data store doesn't exist
+
+            # Creating DataStore.
             ckan.action.datastore_create(
                     resource_id=ckan_resource_id,
                     force=True,
                     fields=resource['schema']['fields'],
                     primary_key=resource['schema'].get('primary_key'))
 
-            reader = csv.DictReader(open(resource['path']))
+            # Reading CSV.
+            try:
+                reader = csv.DictReader(open(resource['path']))
+                print "Reading CSV file from %s" % (resource['path'])
+
+            except Exception as e:
+                print "Error reading CSV file."
+                print e
+                return
+
             rows = [ row for row in reader ]
-            chunksize = 100
+            chunksize = 1000
             offset = 0
-            print('Uploading data for file: %s' % resource['path'])
+            print 'Uploading data for file: %s' % resource['path']
             while offset < len(rows):
                 rowset = rows[offset:offset+chunksize]
                 ckan.action.datastore_upsert(
@@ -188,17 +203,16 @@ def updateDatastore(filename):
                         method='insert',
                         records=rowset)
                 offset += chunksize
-                print('Done: %s' % offset)
+                p = float(offset) / float(450000)
+                print "Done: %s" % p
 
-            ckan = ckanapi.RemoteCKAN(remote, apikey=apikey)
-
-            resource = resources[0]
-            upload_data_to_datastore(resource['resource_id'], resource)
+        resource = resources[0]
+        upload_data_to_datastore(resource['resource_id'], resource)
 
 def runEverything():
     # uploadResource(resource_id, apikey, PATH)
-    downloadResource(PATH)
-    # updateDatastore(PATH)
+    # downloadResource(PATH)
+    updateDatastore(PATH)
 
 
 # Error handler for running the entire script
