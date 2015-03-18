@@ -24,7 +24,6 @@ FILE_PATH = onSw("data/wfp_food_prices_data")
 fetchWFPData <- function(l = NULL) {
 	# Checking path has been provided.
 	if (is.null(l)) stop("Please privide path.")
-	else l = onSw(l)
 
 	# Constructing URL.
 	d = format(Sys.Date(), "%d-%m-%Y")
