@@ -6,7 +6,7 @@ import csv
 import json
 import scraperwiki
 import ckanapi
-import urllib
+#import urllib
 import requests
 import sys
 import hashlib
@@ -25,6 +25,18 @@ def downloadResource(filename):
 
     print "Downloading file from CKAN."
 
+    # Creating a download file function.
+    def download_file(url, l):
+            local_filename = l
+            # NOTE the stream=True parameter
+            r = requests.get(url, stream=True, auth=('dataproject', 'humdata'))
+            with open(local_filename, 'wb') as f:
+                for chunk in r.iter_content(chunk_size=1024): 
+                    if chunk: # filter out keep-alive new chunks
+                        f.write(chunk)
+                        f.flush()
+            return local_filename
+
     # querying
     url = 'https://data.hdx.rwlabs.org/api/action/resource_show?id=' + resource_id
     r = requests.get(url)
@@ -33,7 +45,8 @@ def downloadResource(filename):
 
     # downloading
     try:
-        urllib.urlretrieve(fileUrl, filename)
+        download_file(fileUrl, filename)
+        
     except:
         print 'There was an error downlaoding the file.'
 
