@@ -53,6 +53,10 @@ cleanAndTransform <- function(df = NULL) {
   # seems to be caused by a problem on their
   # end, not in our end.
   df$mp_commoditySource <- NULL
+
+  # Making the column headers lowercase.
+  # Workaround a datastore bug.
+  names(df) <- tolower(names(df))
   
   # End.
   return(df)
