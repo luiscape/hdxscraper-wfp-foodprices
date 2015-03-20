@@ -30,7 +30,7 @@ fetchWFPData <- function(l = NULL, try_date = FALSE) {
     d = format(Sys.Date(), "%d-%m-%Y")
     u = paste0("http://vam.wfp.org/sites/data/WFPVAM_FoodPrices_", d, ".xlsx")
   }
-  else u = "http://vam.wfp.org/sites/data/WFPVAM_FoodPrices_18-03-2015.xlsx")
+  else u = "http://vam.wfp.org/sites/data/WFPVAM_FoodPrices_18-03-2015.xlsx"
 
 	# Downloading file.
 	xlsx_location = paste0(l, ".xlsx")
