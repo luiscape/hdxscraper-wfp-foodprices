@@ -21,13 +21,16 @@ FILE_PATH = onSw("data/wfp_food_prices_data")
 
 # Date format should be:
 # dd-mm-yyyy e.g. 18-03-2015
-fetchWFPData <- function(l = NULL) {
+fetchWFPData <- function(l = NULL, try_date = FALSE) {
 	# Checking path has been provided.
 	if (is.null(l)) stop("Please privide path.")
 
 	# Constructing URL.
-	d = format(Sys.Date(), "%d-%m-%Y")
-	u = paste0("http://vam.wfp.org/sites/data/WFPVAM_FoodPrices_", d, ".xlsx")
+  if (try_date == TRUE) {
+    d = format(Sys.Date(), "%d-%m-%Y")
+    u = paste0("http://vam.wfp.org/sites/data/WFPVAM_FoodPrices_", d, ".xlsx")
+  }
+  else u = "http://vam.wfp.org/sites/data/WFPVAM_FoodPrices_18-03-2015.xlsx")
 
 	# Downloading file.
 	xlsx_location = paste0(l, ".xlsx")
@@ -79,7 +82,7 @@ writeOutput <- function(df = NULL, csv = TRUE, db = TRUE, l = NULL) {
 
 # ScraperWiki wrapper.
 runScraper <- function(p, assessment = TRUE) {
-  data <- fetchWFPData(p)
+  data <- fetchWFPData(p, try_date = FALSE)
   data <- cleanAndTransform(data)
   if (assessment) makeAssessment(data)
   writeOutput(df = data, l = p)
