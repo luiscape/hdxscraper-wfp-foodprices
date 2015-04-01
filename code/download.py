@@ -1,18 +1,6 @@
 import sys
 import requests
 
-# Command line arguments.
-if __name__ == '__main__':
-    if len(sys.argv) <= 2:
-        usage = '''python scripts/upload.py {resource-id} {api-key}
-
-        e.g.
-
-        python scripts/upload.py RESOURCE_ID API_KEY
-        '''
-        print(usage)
-        sys.exit(1)
-
 resource_id = sys.argv[1]
 apikey = sys.argv[2]
 headers = { 'X-CKAN-API-Key': apikey, 'content-type': 'application/json' }
@@ -57,4 +45,17 @@ def downloadResource(filename):
     except:
         print 'There was an error downlaoding the file.'
 
-downloadResource("tool/data/data.csv")
+# Command line arguments.
+if __name__ == '__main__':
+    if len(sys.argv) <= 2:
+        usage = '''
+        python scripts/upload.py {resource-id} {api-key}
+
+        e.g.
+
+        python scripts/upload.py RESOURCE_ID API_KEY
+        '''
+        print(usage)
+        sys.exit(1)
+
+        downloadResource("tool/data/data.csv")
