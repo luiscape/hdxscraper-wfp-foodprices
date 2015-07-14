@@ -3,3 +3,6 @@ setup:
 
 run:
 	bash bin/run.sh;
+
+runsw:
+	bash bin/runsw.sh;
