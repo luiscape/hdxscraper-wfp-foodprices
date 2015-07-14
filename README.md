@@ -2,9 +2,10 @@
 Scraper for WFP food prices.
 
 ## Usage
-Assuming you have everything setup, simply run:
+Use the `Makefile` to run this:
 
-
-```shell
-$ bash run.sh
+```
+make setup
+make test
+make run
 ```

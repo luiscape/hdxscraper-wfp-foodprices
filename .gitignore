@@ -1,6 +1,8 @@
 venv/*
 venv/**
+
 temp/*
 temp/**
+
 .Rhistory
 *.sqlite
